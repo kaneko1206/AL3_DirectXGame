@@ -29,7 +29,7 @@ public: // メンバ関数
 	/// 初期化
 	/// </summary>
 	void Initialize();
-
+	
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
@@ -48,4 +48,9 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
+
+	// テクスチャハンドル
+	uint32_t textureHandle_ = 0;
+	//スプライト
+	Sprite* sprite_ = nullptr;
 };
