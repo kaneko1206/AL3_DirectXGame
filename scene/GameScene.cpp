@@ -4,15 +4,24 @@
 #include "primitiveDrawer.h"
 GameScene::GameScene() {}
 
-GameScene::~GameScene() { delete model_; }
+GameScene::~GameScene() {
+	delete model_;
+	delete sprite_;
+	delete debugCamera_;
+}
 
 void GameScene::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+	//サウンドデータの読み込み
+	soundDataHanndle_ = audio_->LoadWave("fanfare.wav");
+	audio_->PlayWave(soundDataHanndle_);
 	// ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("sample.png");
+	textureHandle_2 = TextureManager::Load("sample.png");
+	sprite_ = Sprite::Create(textureHandle_, {100, 50});
 	// 3Dモデルの生成
 	model_ = Model::Create();
 	// ワールドトランスフォームの初期化
@@ -21,15 +30,38 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 	//ライン描画が参照するビュープロダクションを指定する
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&viewProjection_);
-	
+	//音声再生
+	voiceHnndle_ = audio_->PlayWave(soundDataHanndle_, true);
+	//デバックカメラの生成
+	debugCamera_ = new DebugCamera(WinApp::kWindowWidth, WinApp::kWindowHeight);
+	//軸方向表示を有効にする
+	AxisIndicator::GetInstance()->SetVisible(true);
+	//軸方向表示が参照するビュープロダクションを指定する
+	AxisIndicator::GetInstance()->SetTargetViewProjection(&debugCamera_->GetViewProjection());
 }
 
 void GameScene::Update() { 
+	// スプライトの今の座標を取得
+	Vector2 position = sprite_->GetPosition();
+	// 座標を{2,1}移動
+	position.x += 2.0f;
+	position.y += 1.0f;
+	// 移動した座標をスプライトに反映
+	sprite_->SetPosition(position);
+	// デバックテキストの表示
 	ImGui::Begin(" Debug1");
+	ImGui::Text("Kamata Tarou %d.%d.%d", 2050, 12, 31);
 	ImGui::InputFloat3("InputFloat3", inputFloat3);
 	ImGui::SliderFloat3("sliderFloat3", inputFloat3, 0.0f, 1.0f);
 	ImGui::End();
 	ImGui::ShowDemoWindow();
+	//スペースキーを押した瞬間
+	if (input_->TriggerKey(DIK_SPACE)) {
+	//音声停止
+		audio_->StopWave(voiceHnndle_);
+	}
+	//デバックカメラの更新
+	debugCamera_->Update();
 }
 
 void GameScene::Draw() {
@@ -59,6 +91,7 @@ void GameScene::Draw() {
 	/// </summary>
 	//3Dモデル描画
 	model_->Draw(worldTransform_, viewProjection_, textureHandle_);
+	model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_2);
 	// 3Dオブジェクト描画後処理
 	// ラインを描画する
 	PrimitiveDrawer::GetInstance()->DrawLine3d({0, 0, 0}, {0, 10, 0}, {1.0f, 0.0f, 0.0f, 1.0f});
@@ -72,7 +105,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-
+	sprite_->Draw();
 	// スプライト描画後処理
 	Sprite::PostDraw();
 

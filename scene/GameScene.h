@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Audio.h"
+#include "DebugCamera.h"
 #include "DirectXCommon.h"
 #include "ImGuiManager.h"
 #include "Input.h"
@@ -9,6 +10,7 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "AxisIndicator.h"
 
 /// <summary>
 /// ゲームシーン
@@ -49,15 +51,23 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-
+	// サウンドデータハンドル
+	uint32_t soundDataHanndle_ = 0;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0;
+	uint32_t textureHandle_2 = 0;
 	// 3Dモデル
 	Model* model_ = nullptr;
+	// スプライト
+	Sprite* sprite_ = nullptr;
 	// ワールドトランスフォーム
 	WorldTransform worldTransform_;
 	// ビュープロダクション
 	ViewProjection viewProjection_;
 	// ImGuiで値を入力する変数
 	float inputFloat3[3]{0, 0, 0};
+	// 音声再生ハンドル
+	uint32_t voiceHnndle_ = 0;
+	// デバックカメラ
+	DebugCamera* debugCamera_ = nullptr;
 };
