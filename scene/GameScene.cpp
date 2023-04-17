@@ -1,7 +1,7 @@
 #include "GameScene.h"
 #include "TextureManager.h"
 #include <cassert>
-
+#include "primitiveDrawer.h"
 GameScene::GameScene() {}
 
 GameScene::~GameScene() { delete model_; }
@@ -19,9 +19,17 @@ void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	// ビュープロダクション
 	viewProjection_.Initialize();
+	//ライン描画が参照するビュープロダクションを指定する
+	PrimitiveDrawer::GetInstance()->SetViewProjection(&viewProjection_);
+	
 }
 
-void GameScene::Update() {
+void GameScene::Update() { 
+	ImGui::Begin(" Debug1");
+	ImGui::InputFloat3("InputFloat3", inputFloat3);
+	ImGui::SliderFloat3("sliderFloat3", inputFloat3, 0.0f, 1.0f);
+	ImGui::End();
+	ImGui::ShowDemoWindow();
 }
 
 void GameScene::Draw() {
@@ -52,6 +60,8 @@ void GameScene::Draw() {
 	//3Dモデル描画
 	model_->Draw(worldTransform_, viewProjection_, textureHandle_);
 	// 3Dオブジェクト描画後処理
+	// ラインを描画する
+	PrimitiveDrawer::GetInstance()->DrawLine3d({0, 0, 0}, {0, 10, 0}, {1.0f, 0.0f, 0.0f, 1.0f});
 	Model::PostDraw();
 #pragma endregion
 

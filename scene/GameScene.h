@@ -2,6 +2,7 @@
 
 #include "Audio.h"
 #include "DirectXCommon.h"
+#include "ImGuiManager.h"
 #include "Input.h"
 #include "Model.h"
 #include "SafeDelete.h"
@@ -29,7 +30,7 @@ public: // メンバ関数
 	/// 初期化
 	/// </summary>
 	void Initialize();
-	
+
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
@@ -51,10 +52,12 @@ private: // メンバ変数
 
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0;
-	//3Dモデル
+	// 3Dモデル
 	Model* model_ = nullptr;
-	//ワールドトランスフォーム
+	// ワールドトランスフォーム
 	WorldTransform worldTransform_;
-	//ビュープロダクション
+	// ビュープロダクション
 	ViewProjection viewProjection_;
+	// ImGuiで値を入力する変数
+	float inputFloat3[3]{0, 0, 0};
 };
