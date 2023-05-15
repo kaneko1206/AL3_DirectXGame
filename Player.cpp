@@ -52,9 +52,9 @@ void Player::Update() {
 	const float kRotSpeed = 0.02f;
 
 	if (input_->PushKey(DIK_A)) {
-		worldTransform_.rotation_.y -= kRotSpeed;
-	} else if (input_->PushKey(DIK_D)) {
 		worldTransform_.rotation_.y += kRotSpeed;
+	} else if (input_->PushKey(DIK_D)) {
+		worldTransform_.rotation_.y -= kRotSpeed;
 	}
 
 	Attack();
