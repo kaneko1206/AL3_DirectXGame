@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Audio.h"
+#include "DebugCamera.h"
 #include "DirectXCommon.h"
 #include "Input.h"
 #include "Model.h"
+#include "Player.h"
 #include "SafeDelete.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
@@ -44,8 +46,24 @@ private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
+	Sprite* sprite_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
+
+	WorldTransform worldTransform_;
+	ViewProjection viewProjection_;
+
+	// テクスチャハンドル
+	uint32_t textureHandle_ = 0;
+
+	// モデル
+	Model* model_ = nullptr;
+
+	Player* player_ = nullptr;
+
+	bool isDebugCameraActive_ = false;
+
+	DebugCamera* debugCamera_ = nullptr;
 };

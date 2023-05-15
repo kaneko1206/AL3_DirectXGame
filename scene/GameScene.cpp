@@ -1,19 +1,62 @@
 #include "GameScene.h"
+#include "AxisIndicator.h"
 #include "TextureManager.h"
 #include <cassert>
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {}
+GameScene::~GameScene() {
+	delete model_;
+	delete player_;
+	delete debugCamera_;
+}
 
 void GameScene::Initialize() {
+
+	worldTransform_.Initialize();
+	viewProjection_.Initialize();
+	// 自キャラの生成
+	player_ = new Player();
+	// 自キャラの初期化
+	textureHandle_ = TextureManager::Load("sample.png");
+
+	// 読み込み
+	// モデル生成
+	model_ = Model::Create();
+	player_->Initialize(model_, textureHandle_);
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+
+	debugCamera_ = new DebugCamera(WinApp::kWindowWidth, WinApp::kWindowHeight);
+
+	AxisIndicator::GetInstance()->SetVisible(true);
+
+	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 }
 
-void GameScene::Update() {}
+void GameScene::Update() {
+	// 自キャラの更新
+	player_->Update();
+
+#ifdef _DEBUG
+
+	if (input_->TriggerKey(DIK_SPACE)) {
+		isDebugCameraActive_ = true;
+	}
+#endif // DEBUG
+
+	if (isDebugCameraActive_) {
+		debugCamera_->Update();
+		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+		//
+		viewProjection_.TransferMatrix();
+	} else {
+		viewProjection_.UpdateMatrix();
+	}
+}
 
 void GameScene::Draw() {
 
@@ -41,6 +84,8 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+	// 自キャラの描画
+	player_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
