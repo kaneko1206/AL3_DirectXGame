@@ -1,11 +1,11 @@
 ﻿#include "PlayerBullet.h"
 #include <cassert>
 
-void PlayerBullet::Initialize(Model* model, const Vector3& position) {
+void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
 
 	assert(model);
 	model_ = model;
-
+	velocity_ = velocity;
 	textureHandle_ = TextureManager::Load("/cube/cube.jpg");
 
 	worldTransform_.Initialize();
@@ -16,11 +16,10 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position) {
 
 void PlayerBullet::Update() {
 
-	worldTransform_.matWorld_ = MakeAffineMatrix(
-	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
-
-	// 行列転送
-	worldTransform_.TransferMatrix();
+	worldTransform_.translation_.x += velocity_.x;
+	worldTransform_.translation_.y += velocity_.y;
+	worldTransform_.translation_.z += velocity_.z;
+	worldTransform_.UpdateMatrix();
 }
 
 void PlayerBullet::Draw(const ViewProjection& viewProjection) {

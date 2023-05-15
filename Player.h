@@ -6,6 +6,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include <list>
+#include"MathUtilitie.h"
 
 class Player {
 
