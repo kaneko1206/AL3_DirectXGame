@@ -6,6 +6,7 @@
 #include "Input.h"
 #include "Model.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "SafeDelete.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
@@ -56,12 +57,15 @@ private: // メンバ変数
 	ViewProjection viewProjection_;
 
 	// テクスチャハンドル
-	uint32_t textureHandle_ = 0;
+	uint32_t textureHandleP_ = 0;
+	uint32_t textureHandleE_ = 0;
 
 	// モデル
 	Model* model_ = nullptr;
 
 	Player* player_ = nullptr;
+
+	Enemy* enemy_ = nullptr;
 
 	bool isDebugCameraActive_ = false;
 
