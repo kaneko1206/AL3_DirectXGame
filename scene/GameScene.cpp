@@ -22,14 +22,12 @@ void GameScene::Initialize() {
 	textureHandleP_ = TextureManager::Load("sample.png");
 	// 敵キャラの生成
 	enemy_ = new Enemy();
-	// 敵キャラの初期化
-	textureHandleE_ = TextureManager::Load("sample.png");
 
 	// 読み込み
 	// モデル生成
 	model_ = Model::Create();
 	player_->Initialize(model_, textureHandleP_);
-	enemy_->Initialize(model_, textureHandleE_);
+	enemy_->Initialize(model_, {0.0f, 3.0f, 50.0f});
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();

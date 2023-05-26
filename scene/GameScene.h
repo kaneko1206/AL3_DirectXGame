@@ -57,8 +57,7 @@ private: // メンバ変数
 	ViewProjection viewProjection_;
 
 	// テクスチャハンドル
-	uint32_t textureHandleP_ = 0;
-	uint32_t textureHandleE_ = 0;
+	uint32_t textureHandleP_ = 0u;
 
 	// モデル
 	Model* model_ = nullptr;
