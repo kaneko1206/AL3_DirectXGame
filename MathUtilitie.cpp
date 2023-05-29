@@ -1,4 +1,4 @@
-#include "MathUtilitie.h"
+#include "MathUtility.h"
 
 Vector3 TransforNormal(const Vector3& v, const Matrix4x4& m) {
 	
