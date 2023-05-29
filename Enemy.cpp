@@ -1,4 +1,6 @@
 ﻿#include "Enemy.h"
+#include "ImGuiManager.h"
+#include "MathUtility.h"
 #include <cassert>
 
 void Enemy::Initialize(Model* model, const Vector3& pos) {
@@ -8,11 +10,30 @@ void Enemy::Initialize(Model* model, const Vector3& pos) {
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = pos;
 	textureHandle_ = TextureManager::Load("sample.png");
+	Approach();
 }
 
-void Enemy::Update() {
+Enemy::~Enemy() {
+	for (EnemyBullet* bullet : bullets_) {
+		delete bullet;
+	}
+}
 
-	// Vector3 move = {0, 0, 0};
+void Enemy::Approach() { pushTimer = kFireInterval; }
+
+void Enemy::Update() {
+	pushTimer--;
+	if (pushTimer <= 0) {
+		Fire();
+		pushTimer = kFireInterval;
+	}
+	bullets_.remove_if([](EnemyBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
 
 	// キャラクターの移動速さ
 	const float kCharacterSpeed = 0.2f;
@@ -29,13 +50,27 @@ void Enemy::Update() {
 		worldTransform_.translation_.z += kCharacterSpeed;
 		break;
 	}
-	//	move.z -= kCharacterSpeed;
-
-	// worldTransform_.translation_.x += move.x;
-	// worldTransform_.translation_.y += move.y;
-	// worldTransform_.translation_.z += move.z;
+	for (EnemyBullet* bullet : bullets_) {
+		bullet->Update();
+	}
 }
 
 void Enemy::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	for (EnemyBullet* bullet : bullets_) {
+		bullet->Draw(viewProjection);
+	}
+}
+
+void Enemy::Fire() {
+	const float kBulletSpeed = -1.0f;
+	Vector3 velocity(0, 0, kBulletSpeed);
+
+	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+
+	EnemyBullet* newBullet = new EnemyBullet();
+	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+	bullet_ = newBullet;
+
+	bullets_.push_back(newBullet);
 }

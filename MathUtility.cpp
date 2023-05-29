@@ -1,6 +1,6 @@
-#include "MathUtilitie.h"
+#include "MathUtility.h"
 
-Vector3 TransforNormal(const Vector3& v, const Matrix4x4& m) {
+Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m) {
 	
 	Vector3 result{
 	    v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0],
