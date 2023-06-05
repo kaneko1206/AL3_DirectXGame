@@ -9,13 +9,21 @@ Player::~Player() {
 	}
 }
 
+Vector3 Player::GetWorldPosition() {
+	Vector3 worldPos;
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+	return worldPos;
+}
+
 void Player::Attack() {
 	const float kBulletSpeed = 1.0f;
 	Vector3 velocity(0, 0, kBulletSpeed);
 	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 	if (input_->TriggerKey(DIK_SPACE)) {
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_,velocity);
+		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
 
 		bullets_.push_back(newBullet);
 	}

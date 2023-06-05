@@ -10,6 +10,7 @@ enum class Phase {
 	Approach,
 	Leave,
 };
+class Player;
 
 class Enemy {
 
@@ -22,6 +23,9 @@ public:
 	static const int kFireInterval = 60;
 	Phase phase_ = Phase::Approach;
 	void Approach();
+	void SetPlayer(Player* player) { player_ = player; }
+	Vector3 GetWorldPosition();
+	Vector3 differenceVector;
 
 private:
 	WorldTransform worldTransform_;
@@ -30,4 +34,5 @@ private:
 	EnemyBullet* bullet_ = nullptr;
 	std::list<EnemyBullet*> bullets_;
 	int32_t pushTimer = 60;
+	Player* player_ = nullptr;
 };

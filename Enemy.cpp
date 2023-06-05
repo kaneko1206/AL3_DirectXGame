@@ -1,6 +1,7 @@
 ﻿#include "Enemy.h"
 #include "ImGuiManager.h"
 #include "MathUtility.h"
+#include "Player.h"
 #include <cassert>
 
 void Enemy::Initialize(Model* model, const Vector3& pos) {
@@ -20,6 +21,14 @@ Enemy::~Enemy() {
 }
 
 void Enemy::Approach() { pushTimer = kFireInterval; }
+
+Vector3 Enemy::GetWorldPosition() {
+	Vector3 worldPos;
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+	return worldPos;
+}
 
 void Enemy::Update() {
 	pushTimer--;
@@ -63,8 +72,24 @@ void Enemy::Draw(ViewProjection& viewProjection) {
 }
 
 void Enemy::Fire() {
-	const float kBulletSpeed = -1.0f;
-	Vector3 velocity(0, 0, kBulletSpeed);
+	assert(player_);
+	const float kBulletSpeed = 1.0f;
+	differenceVector.x = player_->GetWorldPosition().x - GetWorldPosition().x;
+	differenceVector.y = player_->GetWorldPosition().y - GetWorldPosition().y;
+	differenceVector.z = player_->GetWorldPosition().z - GetWorldPosition().z;
+	if (differenceVector.x != 0.0f || differenceVector.y != 0.0f || differenceVector.z != 0.0f) {
+		float length = sqrtf(
+		    differenceVector.x * differenceVector.x +
+			differenceVector.y * differenceVector.y +
+		    differenceVector.z * differenceVector.z);
+		differenceVector.x /= length;
+		differenceVector.y /= length;
+		differenceVector.z /= length;
+	}
+
+	Vector3 velocity(
+	    kBulletSpeed * differenceVector.x, kBulletSpeed * differenceVector.y,
+	    kBulletSpeed * differenceVector.z);
 
 	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 
