@@ -30,7 +30,10 @@ Vector3 Enemy::GetWorldPosition() {
 	return worldPos;
 }
 
+void Enemy::OnCollision() {}
+
 void Enemy::Update() {
+
 	pushTimer--;
 	if (pushTimer <= 0) {
 		Fire();
@@ -50,13 +53,16 @@ void Enemy::Update() {
 	switch (phase_) {
 	case Phase::Approach:
 	default:
-		worldTransform_.translation_.z -= kCharacterSpeed;
-		if (worldTransform_.translation_.z < 0.0f) {
+		worldTransform_.translation_.y -= kCharacterSpeed;
+		if (worldTransform_.translation_.y < -20.0f) {
 			phase_ = Phase::Leave;
 		}
 		break;
 	case Phase::Leave:
-		worldTransform_.translation_.z += kCharacterSpeed;
+		worldTransform_.translation_.y += kCharacterSpeed;
+		if (worldTransform_.translation_.y > 20.0f) {
+			phase_ = Phase::Approach;
+		}
 		break;
 	}
 	for (EnemyBullet* bullet : bullets_) {

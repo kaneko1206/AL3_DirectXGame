@@ -17,11 +17,15 @@ public:
 	void Attack();
 	~Player();
 	Vector3 GetWorldPosition();
+	void OnCollision();
+	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
+	float GetRadius() { return radius_; }
 
-private:
+	private:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
 	Input* input_ = nullptr;
 	std::list<PlayerBullet*> bullets_;
+	const float radius_ = 1.0;
 };

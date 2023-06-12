@@ -17,6 +17,8 @@ Vector3 Player::GetWorldPosition() {
 	return worldPos;
 }
 
+void Player::OnCollision() {}
+
 void Player::Attack() {
 	const float kBulletSpeed = 1.0f;
 	Vector3 velocity(0, 0, kBulletSpeed);
@@ -40,6 +42,14 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 }
 
 void Player::Update() {
+
+	bullets_.remove_if([](PlayerBullet* bullet) {
+		if (bullet->isDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
 
 	Vector3 move = {0, 0, 0};
 

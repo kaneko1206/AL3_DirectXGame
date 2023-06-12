@@ -26,6 +26,10 @@ public:
 	void SetPlayer(Player* player) { player_ = player; }
 	Vector3 GetWorldPosition();
 	Vector3 differenceVector;
+	void OnCollision();
+	const std::list<EnemyBullet*>& GetBullets() { return bullets_; }
+	const float radius_ = 1.0;
+	float GetRadius() { return radius_; }
 
 private:
 	WorldTransform worldTransform_;
