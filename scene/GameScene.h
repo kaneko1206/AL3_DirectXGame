@@ -3,11 +3,12 @@
 #include "Audio.h"
 #include "DebugCamera.h"
 #include "DirectXCommon.h"
+#include "Enemy.h"
 #include "Input.h"
 #include "Model.h"
 #include "Player.h"
-#include "Enemy.h"
 #include "SafeDelete.h"
+#include "Skydome.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
@@ -42,7 +43,7 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw();
-	
+
 	/// <summary>
 	/// 描画
 	/// </summary>
@@ -70,6 +71,10 @@ private: // メンバ変数
 	Player* player_ = nullptr;
 
 	Enemy* enemy_ = nullptr;
+
+	Skydome* skydome_ = nullptr;
+
+	Model* modelSkydome_ = nullptr;
 
 	bool isDebugCameraActive_ = false;
 
