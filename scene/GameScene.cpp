@@ -32,11 +32,11 @@ void GameScene::Initialize() {
 	// レールカメラの生成
 	railcamera_ = new RailCamera();
 	railcamera_->Initialise({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f});
-	player_->SetParent(&railcamera_->GetWorldTransform());
 	// 読み込み
 	// モデル生成
 	model_ = Model::Create();
 	player_->Initialize(model_, textureHandleP_, playerPosition);
+	player_->SetParent(&railcamera_->GetWorldTransform());
 	enemy_->Initialize(model_, {5.0f, 0.0f, 0.0f});
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	skydome_->Initialize(modelSkydome_);
@@ -52,13 +52,13 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-	// 自キャラの更新
-	player_->Update();
 	// 敵キャラの更新
 	enemy_->Update();
 	CheckAllCollisions();
 	skydome_->Update();
 	railcamera_->Update();
+	// 自キャラの更新
+	player_->Update();
 #ifdef _DEBUG
 
 	if (input_->TriggerKey(DIK_SPACE)) {
