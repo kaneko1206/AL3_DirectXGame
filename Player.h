@@ -1,17 +1,17 @@
 ﻿#pragma once
 
 #include "Input.h"
+#include "MathUtility.h"
 #include "Model.h"
 #include "PlayerBullet.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include <list>
-#include"MathUtility.h"
 
 class Player {
 
 public:
-	void Initialize(Model* model, uint32_t textureHandle);
+	void Initialize(Model* model, uint32_t textureHandle, const Vector3& pos);
 	void Update();
 	void Draw(ViewProjection& viewProjection);
 	void Attack();
@@ -20,8 +20,9 @@ public:
 	void OnCollision();
 	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
 	float GetRadius() { return radius_; }
+	void SetParent(const WorldTransform* parent);
 
-	private:
+private:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;

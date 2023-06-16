@@ -7,11 +7,13 @@
 #include "Input.h"
 #include "Model.h"
 #include "Player.h"
+#include "RailCamera.h"
 #include "SafeDelete.h"
 #include "Skydome.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+
 
 /// <summary>
 /// ゲームシーン
@@ -79,4 +81,6 @@ private: // メンバ変数
 	bool isDebugCameraActive_ = false;
 
 	DebugCamera* debugCamera_ = nullptr;
+
+	RailCamera* railcamera_ = nullptr;
 };
