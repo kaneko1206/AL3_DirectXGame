@@ -27,7 +27,7 @@ void Player::Attack() {
 	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 	if (input_->TriggerKey(DIK_SPACE)) {
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+		newBullet->Initialize(model_, GetWorldPosition(), velocity);
 
 		bullets_.push_back(newBullet);
 	}

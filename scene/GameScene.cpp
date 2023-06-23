@@ -37,7 +37,7 @@ void GameScene::Initialize() {
 	model_ = Model::Create();
 	player_->Initialize(model_, textureHandleP_, playerPosition);
 	player_->SetParent(&railcamera_->GetWorldTransform());
-	enemy_->Initialize(model_, {5.0f, 0.0f, 0.0f});
+	enemy_->Initialize(model_, {5.0f, 0.0f, 80.0f});
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	skydome_->Initialize(modelSkydome_);
 	dxCommon_ = DirectXCommon::GetInstance();
@@ -61,7 +61,7 @@ void GameScene::Update() {
 	player_->Update();
 #ifdef _DEBUG
 
-	if (input_->TriggerKey(DIK_SPACE)) {
+	if (input_->TriggerKey(DIK_RETURN)) {
 		isDebugCameraActive_ = true;
 	}
 #endif // DEBUG
