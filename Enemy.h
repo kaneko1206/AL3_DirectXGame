@@ -1,42 +1,97 @@
-#pragma once
-
+﻿#pragma once
 #include "EnemyBullet.h"
+#include "Input.h"
 #include "Model.h"
+#include "Vector3.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include <list>
 
-enum class Phase {
-	Approach,
-	Leave,
-};
+// 自機クラスの前方宣言
 class Player;
 
-class Enemy {
+// GameSceneの前方宣言
+class GameScene;
 
+class Enemy {
 public:
-	void Initialize(Model* model, const Vector3& pos);
-	void Update();
-	void Draw(ViewProjection& viewProjection);
-	void Fire();
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~Enemy();
+
+	void Initialize(Model* model, const Vector3& position);
+
+	void Update();
+
+	void Draw(const ViewProjection& viewProjection);
+
+	// 接近
+	void ApproachUpdate();
+
+	// 離脱
+	void LeaveUpdate();
+
+	/// <summary>
+	/// 弾発射
+	/// </summary>
+	void Fire();
+
+	// 発射間隔
 	static const int kFireInterval = 60;
-	Phase phase_ = Phase::Approach;
-	void Approach();
+
+	// 接近フェーズ初期化
+	void ApproachInitialize();
+
 	void SetPlayer(Player* player) { player_ = player; }
-	Vector3 GetWorldPosition();
-	Vector3 differenceVector;
+
+	void SetGameScene(GameScene* gameScene) { gamescene_ = gameScene; }
+
+	// 衝突を検出したら呼び出されるコールバック関数
 	void OnCollision();
-	const std::list<EnemyBullet*>& GetBullets() { return bullets_; }
-	const float radius_ = 1.0;
-	float GetRadius() { return radius_; }
+	bool IsDead() const { return isDead_; }
+
+	// ワールド座標を取得
+	Vector3 GetWorldPosition();
+
+	const float GetRadius() { return radius_; }
+	const float radius_ = 1.0f;
+
+	// 弾リストを取得
+	// const std::list<EnemyBullet*>& GetBullets() { return bullets_; }
 
 private:
 	WorldTransform worldTransform_;
-	Model* model_ = nullptr;
-	uint32_t textureHandle_ = 0u;
-	EnemyBullet* bullet_ = nullptr;
-	std::list<EnemyBullet*> bullets_;
-	int32_t pushTimer = 60;
+	Model* model_;
+	uint32_t textureHundle_;
+
+	enum class Phase {
+		Approach, // 接近する
+		Leave,    // 離脱する
+	};
+	// フェーズ
+	Phase phase_ = Phase::Approach;
+
+	// 弾
+	// std::list<EnemyBullet*> bullets_;
+	// EnemyBullet* bullet_ = nullptr;
+
+	// キーボード入力
+	Input* input_ = nullptr;
+
+	// 発射タイマー
+	int32_t fireTimer = 0;
+
+	// 自キャラ
 	Player* player_ = nullptr;
+
+	// ゲームシーン
+	GameScene* gamescene_ = nullptr;
+
+	// 寿命<frm>
+	// static const int32_t klifeTime = 60 * 5;
+	// デスタイマー
+	int32_t deathTimer_ = 300;
+	// デスフラグ
+	bool isDead_ = false;
 };

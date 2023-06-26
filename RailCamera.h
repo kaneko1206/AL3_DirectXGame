@@ -4,7 +4,7 @@
 
 class RailCamera {
 public:
-	void Initialise(Vector3 pos, Vector3 rot);
+	void Initialize(Vector3 pos, Vector3 rot);
 
 	void Update();
 
