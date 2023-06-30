@@ -32,6 +32,8 @@ void GameScene::Initialize() {
 	playerHandle_ = TextureManager::Load("sample.png");
 	model_ = Model::Create();
 	viewProjection_.Initialize();
+	// レティクルのテクスチャ
+	TextureManager::Load("target.png");
 	Vector3 playerPosition(0, 0, 40);
 	player_ = new Player();
 	player_->Initialize(model_, playerHandle_, playerPosition);
@@ -49,13 +51,12 @@ void GameScene::Initialize() {
 
 	player_->SetParent(&railCamera_->GetWorldTransform());
 
-	// AddEnemy({0, 3, 80});
 
 	LoadEnemypopData();
 }
 
 void GameScene::Update() {
-	player_->Update();
+	player_->Update(viewProjection_);
 	debugCamera_->Update();
 	skydome_->Update();
 	railCamera_->Update();
@@ -155,7 +156,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-
+	player_->DrawUI();
 	// スプライト描画後処理
 	Sprite::PostDraw();
 

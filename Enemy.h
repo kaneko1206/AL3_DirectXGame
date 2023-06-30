@@ -55,7 +55,6 @@ public:
 	Vector3 GetWorldPosition();
 
 	const float GetRadius() { return radius_; }
-	const float radius_ = 1.0f;
 
 	// 弾リストを取得
 	// const std::list<EnemyBullet*>& GetBullets() { return bullets_; }
@@ -94,4 +93,5 @@ private:
 	int32_t deathTimer_ = 300;
 	// デスフラグ
 	bool isDead_ = false;
+	const float radius_ = 1.0f;
 };

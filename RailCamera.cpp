@@ -25,7 +25,9 @@ void RailCamera::Update() {
 	worldTransform_.UpdateMatrix();
 	worldTransform_.matWorld_ = MakeAffineMatrix(
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+
 	viewProjection_.matView = Inverse(worldTransform_.matWorld_);
+
 	viewProjection_.TransferMatrix();
 	ImGui::Begin("Camera");
 	// pos
