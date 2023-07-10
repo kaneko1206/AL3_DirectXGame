@@ -20,7 +20,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle, const Vector3& pos
 	uint32_t textureReticle = TextureManager::Load("target.png");
 
 	// スプライト生成
-	sprite2DReticle_ = Sprite::Create(textureReticle, posM, {1, 1, 1, 1}, {(0.5f), (0.5f)});
+	sprite2DReticle_ = Sprite::Create(textureReticle, {640, 360}, {1, 1, 1, 1}, {(0.5f), (0.5f)});
 
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = pos;
@@ -30,59 +30,22 @@ void Player::Initialize(Model* model, uint32_t textureHandle, const Vector3& pos
 	worldTransform3Dreticle_.Initialize();
 }
 void Player::Update(ViewProjection& viewProjection) {
-	//Vector3 positionReticle = worldTransform3Dreticle_.translation_;
+	Vector3 positionReticle = worldTransform3Dreticle_.translation_;
 
 	// ビューポート行列
 	Matrix4x4 matViewport =
 	    MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
 
 	// ビュー行列とプロジェクション行列、ビューポート行列を合成する
-	//Matrix4x4 matViewProjectionViewport =
-	//    viewProjection.matView * viewProjection.matProjection * matViewport;
+	Matrix4x4 matViewProjectionViewport =
+	    viewProjection.matView * viewProjection.matProjection * matViewport;
 
 	// ワールド→スクリーン座標行列(ここで2Dから3Dになる)
-	//positionReticle = Transform(positionReticle, matViewProjectionViewport);
+	positionReticle = Transform(positionReticle, matViewProjectionViewport);
 
 	// スプライトのレティクルに座標設定
-	//sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
+	sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
 
-	POINT mousePosition;
-	// マウス座標(スクリーン座標)を取得する
-	GetCursorPos(&mousePosition);
-
-	// クライアントエリア座標に変換する
-	HWND hwnd = WinApp::GetInstance()->GetHwnd();
-	ScreenToClient(hwnd, &mousePosition);
-
-	// マウス座標を2Dレティクルのスプライトに代入する
-	sprite2DReticle_->SetPosition(Vector2((float)mousePosition.x, (float)mousePosition.y));
-
-	// ビュープロジェクションビューポート合成行列
-	Matrix4x4 matVPV = viewProjection.matView * viewProjection.matProjection * matViewport;
-
-	// 合成行列の逆行列を計算する
-	Matrix4x4 matInverseVPV = Inverse(matVPV);
-
-	// スクリーン座標
-	Vector3 posNear = Vector3((float)mousePosition.x, (float)mousePosition.y, 0);
-	Vector3 posFar = Vector3((float)mousePosition.x, (float)mousePosition.y, 1);
-
-	// スクリーン座標系からワールド座標系へ
-	posNear = Transform(posNear, matInverseVPV);
-	posFar = Transform(posFar, matInverseVPV);
-
-	// マウスレイの方向
-	Vector3 mouseDirection = {posFar.x - posNear.x, posFar.y - posNear.y, posFar.z - posNear.z};
-	mouseDirection = Normalize(mouseDirection);
-
-	// カメラから照準オブジェクトの距離
-	const float kDistanceTestObject = 80.0f;
-	worldTransform3Dreticle_.translation_.x = posNear.x + mouseDirection.x * kDistanceTestObject;
-	worldTransform3Dreticle_.translation_.y = posNear.y + mouseDirection.y * kDistanceTestObject;
-	worldTransform3Dreticle_.translation_.z = posNear.z + mouseDirection.z * kDistanceTestObject;
-
-	// worldTransform3DReticle_のワールド行列更新と転送
-	worldTransform3Dreticle_.UpdateMatrix();
 	// デスフラグの立った弾を削除
 	bullets_.remove_if([](PlayerBullet* bullet) {
 		if (bullet->isDead()) {
@@ -171,10 +134,10 @@ void Player::Update(ViewProjection& viewProjection) {
 	    dir.z * kDistancePlayerTo3DReticle,
 	};
 	// 3Dレティクルの座標を設定
-	//worldTransform3Dreticle_.translation_ = {
-	//    worldTransform_.translation_.x + offset.x, worldTransform_.translation_.y + offset.y,
-	//    worldTransform_.translation_.z + offset.z};
-	//worldTransform3Dreticle_.UpdateMatrix();
+	worldTransform3Dreticle_.translation_ = {
+	    worldTransform_.translation_.x + offset.x, worldTransform_.translation_.y + offset.y,
+	    worldTransform_.translation_.z + offset.z};
+	worldTransform3Dreticle_.UpdateMatrix();
 
 #ifdef _DEBUG
 
@@ -190,14 +153,6 @@ void Player::Update(ViewProjection& viewProjection) {
 	ImGui::End();
 #endif // _DEBUG
 
-	ImGui::Begin("Player");
-	// ImGui::Text("2DReticle:(%f,%f)",)
-	ImGui::Text("Near:(%+.2f,%+.2f,%+.2f)", posNear.x, posNear.y, posNear.z);
-	ImGui::Text("Far:(%+.2f,%+.2f,%+.2f)", posFar.x, posFar.y, posFar.z);
-	ImGui::Text(
-	    "3DReticle(%+.2f,%+.2f,%+.2f)", worldTransform3Dreticle_.translation_.x,
-	    worldTransform3Dreticle_.translation_.y, worldTransform3Dreticle_.translation_.z);
-	ImGui::End();
 }
 
 void Player::Draw(ViewProjection& viewProjection) {
@@ -214,15 +169,7 @@ void Player::Attack() {
 	const float kBulletSpeed = 1.0f;
 	Vector3 velocity(0, 0, kBulletSpeed);
 	// 速度ベクトルを自機の向きに合わせて回転させる
-	//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
-	velocity = {
-	    worldTransform3Dreticle_.translation_.x - worldTransform_.translation_.x,
-	    worldTransform3Dreticle_.translation_.y - worldTransform_.translation_.y,
-	    worldTransform3Dreticle_.translation_.z - worldTransform_.translation_.z};
-	Vector3 n = Normalize(velocity);
-	velocity.x = n.x * kBulletSpeed;
-	velocity.y = n.y * kBulletSpeed;
-	velocity.z = n.z * kBulletSpeed;
+	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 	if (input_->TriggerKey(DIK_SPACE)) {
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
