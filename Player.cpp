@@ -15,6 +15,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle, const Vector3& pos
 	assert(model);
 	model_ = model;
 	textureHandle_ = textureHandle;
+	isDead_ = false;
 
 	// レティクル用テクスチャ取得
 	uint32_t textureReticle = TextureManager::Load("target.png");
@@ -67,7 +68,7 @@ void Player::Update(ViewProjection& viewProjection) {
 	} else if (input_->PushKey(DIK_RIGHT)) {
 		move.x += kCharacterSpeed;
 	}
-
+	
 	// 押した方向で移動ベクトルを変更(上下)
 	if (input_->PushKey(DIK_UP)) {
 		move.y += kCharacterSpeed;
@@ -77,7 +78,7 @@ void Player::Update(ViewProjection& viewProjection) {
 
 	// キャラクター旋回
 	// 押した方向で移動ベクトルを変更
-	const float kRotSpeed = 0.02f;
+	const float kRotSpeed = 0.01f;
 	if (input_->PushKey(DIK_A)) {
 		worldTransform_.rotation_.y -= kRotSpeed;
 	}
@@ -89,7 +90,7 @@ void Player::Update(ViewProjection& viewProjection) {
 	}
 	if (input_->PushKey(DIK_S)) {
 		worldTransform_.rotation_.x += kRotSpeed;
-	}
+	} 
 
 	// キャラクター攻撃処理
 	Attack();
@@ -99,9 +100,15 @@ void Player::Update(ViewProjection& viewProjection) {
 		bullet->Update();
 	}
 
+
+	// 座標移動(ベクトルの加算)
+	worldTransform_.translation_.x += move.x;
+	worldTransform_.translation_.y += move.y;
+	worldTransform_.translation_.z += move.z;
+
 	// 移動限界座標
 	const float kMoveLimitX = 20.0f;
-	const float kMoveLimitY = 20.0f;
+	const float kMoveLimitY = 15.0f;
 
 	// 範囲を超えない処理
 	worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
@@ -109,20 +116,15 @@ void Player::Update(ViewProjection& viewProjection) {
 	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
-	// 座標移動(ベクトルの加算)
-	worldTransform_.translation_.x += move.x;
-	worldTransform_.translation_.y += move.y;
-	worldTransform_.translation_.z += move.z;
-
 	worldTransform_.matWorld_ = MakeAffineMatrix(
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 
 	worldTransform_.UpdateMatrix();
 
 	// 自機から3Dレティクルへの距離
-	const float kDistancePlayerTo3DReticle = 50.0f;
+	const float kDistancePlayerTo3DReticle = 100.0f;
 	// 自機から3Dレティクルへのオフセット(Z+向き)
-	Vector3 offset = {0, 0, 1.0f};
+	Vector3 offset = {0, 0, 2.0f};
 	// 自機のワールド行列の回転を反映
 	offset = TransformNormal(offset, worldTransform_.matWorld_);
 	// ベクトルの長さを整える
@@ -179,7 +181,7 @@ void Player::Attack() {
 	}
 }
 
-void Player::OnCollision() {}
+void Player::OnCollision() { isDead_ = true; }
 
 void Player::SetParent(const WorldTransform* parent) {
 	// 親子関係を結ぶ

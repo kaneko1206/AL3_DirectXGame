@@ -45,6 +45,8 @@ public:
 	// 弾リストを取得
 	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
 
+	bool IsDead() const { return isDead_; }
+
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
@@ -62,4 +64,5 @@ private:
 	WorldTransform worldTransform3Dreticle_;
 	// 2Dレティクル用スプライト
 	Sprite* sprite2DReticle_ = nullptr;
+	bool isDead_ = false;
 };

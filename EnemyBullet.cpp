@@ -1,11 +1,11 @@
-#include "EnemyBullet.h"
+﻿#include "EnemyBullet.h"
 #include <cassert>
 
 void EnemyBullet::Initialize(Model* model, const Vector3& pos, const Vector3& velocity) {
 	assert(model);
 	model_ = model;
 
-	texturehandle_ = TextureManager::Load("uvChecker.png");
+	textureHandle_ = TextureManager::Load("EnemyBullet.png");
 
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = pos;
@@ -24,13 +24,15 @@ void EnemyBullet::Update() {
 }
 
 void EnemyBullet::Draw(ViewProjection& viewProjection) {
-	model_->Draw(worldTransform_, viewProjection, texturehandle_);
+	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 }
 
 void EnemyBullet::OnCollision() { isDead_ = true; }
 
 Vector3 EnemyBullet::GetWorldPosition() {
+	// ワールド座標を入れる変数
 	Vector3 worldPos;
+	// ワールド行列の平行移動成分を取得(ワールド座標)
 	worldPos.x = worldTransform_.matWorld_.m[3][0];
 	worldPos.y = worldTransform_.matWorld_.m[3][1];
 	worldPos.z = worldTransform_.matWorld_.m[3][2];

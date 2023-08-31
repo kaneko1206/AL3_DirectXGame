@@ -37,8 +37,6 @@ public:
 	/// </summary>
 	void Fire();
 
-	// 発射間隔
-	static const int kFireInterval = 60;
 
 	// 接近フェーズ初期化
 	void ApproachInitialize();
@@ -62,7 +60,7 @@ public:
 private:
 	WorldTransform worldTransform_;
 	Model* model_;
-	uint32_t textureHundle_;
+	uint32_t textureHandle_;
 
 	enum class Phase {
 		Approach, // 接近する
@@ -71,15 +69,14 @@ private:
 	// フェーズ
 	Phase phase_ = Phase::Approach;
 
-	// 弾
-	// std::list<EnemyBullet*> bullets_;
-	// EnemyBullet* bullet_ = nullptr;
-
 	// キーボード入力
 	Input* input_ = nullptr;
 
 	// 発射タイマー
-	int32_t fireTimer = 0;
+	int32_t fireTimer_ = 120;
+
+	// 発射間隔
+	static const int kFireInterval = 120;
 
 	// 自キャラ
 	Player* player_ = nullptr;
@@ -87,11 +84,8 @@ private:
 	// ゲームシーン
 	GameScene* gamescene_ = nullptr;
 
-	// 寿命<frm>
-	// static const int32_t klifeTime = 60 * 5;
-	// デスタイマー
-	int32_t deathTimer_ = 300;
 	// デスフラグ
 	bool isDead_ = false;
+
 	const float radius_ = 1.0f;
 };

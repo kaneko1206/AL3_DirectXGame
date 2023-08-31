@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Audio.h"
+#include "BG.h"
 #include "DebugCamera.h"
 #include "DirectXCommon.h"
 #include "Enemy.h"
@@ -14,6 +15,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "list"
+#include <Score.h>
 #include <sstream>
 
 /// <summary>
@@ -102,6 +104,19 @@ private: // メンバ変数
 	// 敵発生コマンド
 	std::stringstream enemyPopCommands;
 
+	BG* bg = nullptr;
+
 	bool waitFlag = false;
 	int waitTimer;
+	enum class Scene {
+		Title,
+		GamePlay,
+		Result,
+	};
+
+	Scene scene_ = Scene::Title;
+	Score* score_ = nullptr;
+	int gameScore_ = 0;
+	// スコア増加量
+	int addScoreVal_ = 9;
 };

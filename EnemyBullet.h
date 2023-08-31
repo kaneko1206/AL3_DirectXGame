@@ -27,6 +27,6 @@ private:
 	WorldTransform worldTransform_;
 	Vector3 velocity_;
 	Model* model_;
-	uint32_t texturehandle_;
+	uint32_t textureHandle_;
 	const float radius_ = 1.0;
 };
